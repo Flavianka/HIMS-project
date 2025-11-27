@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Admin Dashboard</title>
+  <link rel="Icon" href="../assets/icons/symbol/favicon-32x32.png" type="image/png"  />
+  <link rel="stylesheet" href="../css/super-admin.css" />   
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/css/intlTelInput.css" />
+
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <img src="../assets/icons/logo1.png" alt="Logo" class="logo" />
+      <h4>Super Admin Dashboard</h4>
+      <nav>
+        <div class="nav-option active" onclick="loadSection('overview', this)">
+            <img src="../assets/icons/dashboard.png" alt="Overview Icon" class="nav-icon" />
+          Overview
+        </div>
+        <div class="nav-option" onclick="loadSection('register-admin', this)">
+            <img src="../assets/icons/register.png" alt="Register Icon" class="nav-icon" />
+          Register Admin
+        </div>
+        <div class="nav-option" onclick="loadSection('view-admins', this)">
+            <img src="../assets/icons/users.png" alt="View Icon" class="nav-icon" />
+          View Admins
+        </div>
+        <div class="nav-option" onclick="loadSection('settings', this)">
+            <img src="../assets/icons/settings.png" alt="Settings Icon" class="nav-icon" />
+          Settings
+        </div>
+        <div class="nav-option" onclick="window.location.href='super-admin-login.html'">
+            <img src="../assets/icons/logout.png" alt="Logout Icon" class="nav-icon" />
+          Logout
+        </div>
+      </nav>
+
+
+
+    </aside>
+
+    <main class="content" id="main-content">
+      <!-- Default overview section will be loaded here -->
+       
+    </main>
+
+  </div>
+<!-- Edit Admin Modal -->
+<div id="editAdminModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+    <h2>Edit Admin</h2>
+    <form id="editAdminForm">
+      <input type="hidden" id="editAdminId">
+
+      <label for="editFirstName">First Name</label>
+      <input type="text" id="editFirstName" required>
+
+      <label for="editLastName">Last Name</label>
+      <input type="text" id="editLastName" required>
+
+      <label for="editEmail">Email</label>
+      <input type="email" id="editEmail" required>
+
+      <label for="editPhone">Phone Number</label>
+      <input type="tel" id="editPhone" required>
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+<!-- Add this near the bottom of your HTML or in your main JS -->
+<script>
+function openSettingsModal(type) {
+  const modal = document.getElementById('settings-modal');
+  const modalContent = document.getElementById('settings-modal-content');
+
+  let content = '';
+
+  if (type === 'profile') {
+  content = `
+    <h2>Account Settings</h2>
+    <form id="accountSettingsForm">
+      <label for="newUsername">Username</label>
+      <input type="text" id="newUsername" name="username" required>
+
+      <label for="newEmail">Email</label>
+      <input type="email" id="newEmail" name="email" required>
+
+      <label for="newPassword">New Password</label>
+      <input type="password" id="newPassword" name="password" required>
+
+      <button type="submit" class="submit-sale-btn">Save Changes</button>
+    </form>
+    <div id="settings-message"></div>
+  `;
+} else if (type === 'appearance') {
+    
+  const savedTheme = localStorage.getItem('theme') || 'default';
+  const savedLayout = localStorage.getItem('layout') || 'standard';
+
+  content = `
+    <h2>Appearance</h2>
+
+    <label>Theme</label>
+    <select id="theme-select">
+      <option value="default" ${savedTheme === 'default' ? 'selected' : ''}>Default</option>
+      <option value="dark" ${savedTheme === 'dark' ? 'selected' : ''}>Dark</option>
+      <option value="light" ${savedTheme === 'light' ? 'selected' : ''}>Light</option>
+    </select>
+
+    <label>Layout Style</label>
+    <select id="layout-select">
+      <option value="standard" ${savedLayout === 'standard' ? 'selected' : ''}>Standard</option>
+      <option value="compact" ${savedLayout === 'compact' ? 'selected' : ''}>Compact</option>
+    </select>
+
+    <button onclick="applyAppearanceSettings()">Save Preferences</button>
+  `;
+  } else if (type === 'security') {
+    content = `
+      <h2>Security Settings</h2>
+      <label>Two-Factor Authentication</label>
+      <select>
+        <option>Disabled</option>
+        <option>Enabled</option>
+      </select>
+      <label>View Login Activity</label>
+      <button>Show Activity</button>
+    `;
+  }
+
+  modalContent.innerHTML = content;
+  modal.style.display = 'flex';
+}
+
+function closeSettingsModal() {
+  document.getElementById('settings-modal').style.display = 'none';
+}
+</script>
+<div id="settings-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeSettingsModal()">&times;</span>
+    <div id="settings-modal-content"></div>
+  </div>
+</div>
+
+  <script src="../js/super-admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/intlTelInput.min.js"></script>
+</body>
+</html>

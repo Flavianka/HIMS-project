@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <link rel="Icon" href="assets/icons/symbol/favicon-32x32.png" type="image/png"  />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Add intl-tel-input CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/css/intlTelInput.css">
+</head>
+<body>
+  <img src="assets/icons/Logo OG.png" alt="Logo" class="logo" />
+  <div class="login-container">
+    <div class="form-card">
+      <div class="login-form">
+        <h2>Register</h2>
+      </div>
+
+      <!-- Add enctype for file uploads -->
+      <form action="php/register.php" method="POST" enctype="multipart/form-data" id="registrationForm">
+        <div class="input-icon">
+          <img src="assets/icons/username.png" alt="user icon">
+          <input type="text" name="username" placeholder="Username" required>
+        </div>
+
+        <div class="input-icon">
+          <img src="assets/icons/email.png" alt="email icon">
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-icon">
+          <input id="phone" type="tel" name="phone" placeholder="Phone Number" required>
+        </div>
+
+        <div class="input-icon">
+          <img src="assets/icons/password-lock.png" alt="password icon">
+          <input type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <div class="input-icon">
+          <img src="assets/icons/password-lock.png" alt="confirm icon">
+          <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        </div>
+
+        <div class="input-icon">
+          <label for="photo" style="display: block; margin-bottom: 5px; color: #666;">Profile Photo</label>
+          <input type="file" id="photo" name="photo" accept="image/*" required>
+        </div>
+
+        <button class="register-button" type="submit">Register</button>
+      </form>
+
+      <div class="register-link">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+      
+      <!-- Message display area -->
+      <div id="message" style="margin-top: 15px; text-align: center;"></div>
+    </div>
+  </div>
+
+  <!-- Add intl-tel-input JS -->
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/intlTelInput.min.js"></script>
+  <script>
+    // Initialize phone input and store the instance
+    const phoneInputField = document.querySelector("#phone");
+    const iti = window.intlTelInput(phoneInputField, {
+      initialCountry: "auto",
+      geoIpLookup: function (callback) {
+        fetch("https://ipapi.co/json")
+          .then(res => res.json())
+          .then(data => callback(data.country_code))
+          .catch(() => callback("us"));
+      },
+      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/utils.js"
+    });
+
+    // Handle form submission with AJAX
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const messageDiv = document.getElementById('message');
+      const submitButton = this.querySelector('button[type="submit"]');
+      
+      // Validate phone number
+      if (!iti.isValidNumber()) {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Please enter a valid phone number';
+        return;
+      }
+      
+      // Add the full phone number with country code using the iti instance
+      const phoneNumber = iti.getNumber();
+      formData.set('phone', phoneNumber);
+      
+      // Disable button to prevent multiple submissions
+      submitButton.disabled = true;
+      submitButton.textContent = 'Registering...';
+      
+      fetch('php/register.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          messageDiv.style.color = 'green';
+          messageDiv.textContent = data.message;
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          messageDiv.style.color = 'red';
+          messageDiv.textContent = data.message;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'An error occurred during registration';
+      })
+      .finally(() => {
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.textContent = 'Register';
+      });
+    });
+
+    // Optional: Add real-time phone number validation
+    phoneInputField.addEventListener('input', function() {
+      const messageDiv = document.getElementById('message');
+      if (iti.isValidNumber()) {
+        messageDiv.style.color = 'green';
+        messageDiv.textContent = '✓ Valid phone number';
+      } else {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Please enter a valid phone number';
+      }
+    });
+
+    // Clear validation message when user starts typing again
+    phoneInputField.addEventListener('focus', function() {
+      document.getElementById('message').textContent = '';
+    });
+  </script>
+</body>
+</html>

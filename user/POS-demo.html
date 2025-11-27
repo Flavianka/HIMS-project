@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POS Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .pos-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .products, .cart {
+      flex: 1 1 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .products h2, .cart h2 {
+      margin-top: 0;
+    }
+
+    .product-list button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      background: #059669;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .product-list button:hover {
+      background: #047857;
+    }
+
+    .cart-table {
+      width: 100%;
+      margin-top: 15px;
+      border-collapse: collapse;
+    }
+
+    .cart-table th, .cart-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    .cart-table th {
+      background-color: #f0f0f0;
+    }
+
+    .totals {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .cash-section {
+      margin-top: 20px;
+    }
+
+    .cash-section input {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .checkout-btn {
+      background: #2563eb;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background: #1e40af;
+    }
+
+    .remove-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Supermarket POS System</h1>
+  <div class="pos-container">
+    <div class="products">
+      <h2>Products</h2>
+      <div class="product-list">
+        <button onclick="addToCart('Petrol - 1L', 145)">Petrol - 1L (Ksh 145)</button>
+        <button onclick="addToCart('Diesel - 1L', 130)">Diesel - 1L (Ksh 130)</button>
+        <button onclick="addToCart('Lubricant - 1L', 350)">Lubricant - 1L (Ksh 350)</button>
+        <button onclick="addToCart('Spark Plug', 250)">Spark Plug (Ksh 250)</button>
+        <button onclick="addToCart('Oil Filter', 450)">Oil Filter (Ksh 450)</button>
+      </div>
+    </div>
+
+    <div class="cart">
+      <h2>Cart</h2>
+      <table class="cart-table" id="cart-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cart-body">
+          <!-- Cart items go here -->
+        </tbody>
+      </table>
+
+      <div class="totals">Total: Ksh <span id="total">0.00</span></div>
+
+      <div class="cash-section">
+        <label for="cash">Cash Received (Ksh)</label>
+        <input type="number" id="cash" placeholder="Enter amount" oninput="updateChange()" />
+        <div class="totals">Change: Ksh <span id="change">0.00</span></div>
+      </div>
+
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    const cart = [];
+
+    function addToCart(name, price) {
+      const item = cart.find(p => p.name === name);
+      if (item) {
+        item.quantity++;
+      } else {
+        cart.push({ name, price, quantity: 1 });
+      }
+      renderCart();
+    }
+
+    function removeFromCart(name) {
+      const index = cart.findIndex(p => p.name === name);
+      if (index !== -1) {
+        cart.splice(index, 1);
+        renderCart();
+      }
+    }
+
+    function renderCart() {
+      const tbody = document.getElementById('cart-body');
+      tbody.innerHTML = '';
+
+      let total = 0;
+      cart.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price}</td>
+          <td>${subtotal}</td>
+          <td><button class="remove-btn" onclick="removeFromCart('${item.name}')">Remove</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('total').textContent = total.toFixed(2);
+      updateChange();
+    }
+
+    function updateChange() {
+      const cash = parseFloat(document.getElementById('cash').value || 0);
+      const total = parseFloat(document.getElementById('total').textContent || 0);
+      const change = cash - total;
+      document.getElementById('change').textContent = change >= 0 ? change.toFixed(2) : '0.00';
+    }
+
+    function checkout() {
+      const cash = parseFloat(document.getElementById('cash').value || 0);
+      const total = parseFloat(document.getElementById('total').textContent || 0);
+
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+
+      if (cash < total) {
+        alert("Insufficient payment.");
+        return;
+      }
+
+      alert("Transaction complete. Change: Ksh " + (cash - total).toFixed(2));
+      cart.length = 0;
+      document.getElementById('cash').value = '';
+      renderCart();
+    }
+  </script>
+</body>
+</html>

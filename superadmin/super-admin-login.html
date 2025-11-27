@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Login</title>
+  <link rel="stylesheet" href="style.css"> 
+  <style>
+    body {
+      background: #f4f6f9;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+     .logo{
+    width: 180px;
+    height: auto;
+    margin-bottom: 20px;
+    
+}
+
+    .login-card {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #2c3e50;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #34495e;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #1f7a8c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-login:hover {
+      background-color: #155e6d;
+    }
+
+    .note {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <img src="../assets/icons/Logo OG.png" alt="Logo" class="logo" />
+  <div class="login-card">
+    <h2>Super Admin Login</h2>
+    <form action="../php/super-admin-login.php" method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </div>
+      <button class="btn-login" type="submit">Login</button>
+    </form>
+    <div class="note">
+      Authorized personnel only.
+    </div>
+  </div>
+</body>
+</html>

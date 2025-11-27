@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admin-dashboard.css" />
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background: #222;
+  color: #fff;
+  height: 100vh;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  border-bottom: 1px solid #444;
+}
+
+.sidebar a {
+  display: block;
+  padding: 1em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar a.active, .sidebar a:hover {
+  background-color: #444;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2em;
+  background: #fff;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1em;
+  margin-top: 1em;
+}
+
+.card {
+  background: #e3e3e3;
+  padding: 1.5em;
+  border-radius: 8px;
+  font-size: 1.2em;
+}
+
+  </style>
+
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Main Wrapper -->
+  <div class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-emerald-600 text-white flex-shrink-0">
+      <div class="p-6 text-xl font-bold">Admin Panel</div>
+      <nav class="px-4 space-y-2">
+        <a href="#" class="block py-2 px-3 rounded bg-emerald-700">Overview</a>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-emerald-500">Manage Inventory</a>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-emerald-500">Sales Records</a>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-emerald-500">Users</a>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-emerald-500">Settings</a>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-red-500 mt-4">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold text-emerald-700">Welcome, Admin</h1>
+        <span class="text-sm text-gray-500">Today: <span id="today-date"></span></span>
+      </header>
+
+      <!-- Overview Section -->
+      <section class="space-y-6">
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h2 class="text-gray-500 text-sm">Total Products</h2>
+            <p class="text-2xl font-bold text-gray-800">120</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h2 class="text-gray-500 text-sm">Total Sales</h2>
+            <p class="text-2xl font-bold text-gray-800">452</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h2 class="text-gray-500 text-sm">Total Revenue</h2>
+            <p class="text-2xl font-bold text-gray-800">Ksh 85,300</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h2 class="text-gray-500 text-sm">Registered Users</h2>
+            <p class="text-2xl font-bold text-gray-800">98</p>
+          </div>
+        </div>
+
+        <!-- Low Stock + Recent Sales -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Low Stock Alerts -->
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h3 class="text-lg font-semibold mb-3 text-emerald-700">🔔 Low Stock Alerts</h3>
+            <ul class="space-y-2">
+              <li class="flex justify-between text-sm text-gray-700 border-b pb-1">
+                <span>Cooking Oil</span>
+                <span class="text-red-500">2 units left</span>
+              </li>
+              <li class="flex justify-between text-sm text-gray-700 border-b pb-1">
+                <span>Flour</span>
+                <span class="text-red-500">4 units left</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Recent Sales -->
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h3 class="text-lg font-semibold mb-3 text-emerald-700">🛍️ Recent Sales</h3>
+            <ul class="space-y-2 text-sm text-gray-700">
+              <li class="flex justify-between border-b pb-1">
+                <span>Order #1234</span>
+                <span>Ksh 1,500</span>
+              </li>
+              <li class="flex justify-between border-b pb-1">
+                <span>Order #1233</span>
+                <span>Ksh 980</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sales Chart Placeholder -->
+        <div class="bg-white rounded-2xl shadow p-4">
+          <h3 class="text-lg font-semibold mb-3 text-emerald-700">📈 Sales Overview</h3>
+          <div class="h-64 flex items-center justify-center text-gray-400 italic">
+            [Sales Chart Coming Soon]
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+  const links = document.querySelectorAll(".sidebar a");
+  const sections = document.querySelectorAll(".content-section");
+
+  links.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute("data-section");
+
+      // Toggle active link
+      links.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+
+      // Toggle content
+      sections.forEach(section => {
+        section.classList.remove("active");
+        if (section.id === sectionId) {
+          section.classList.add("active");
+        }
+      });
+    });
+  });
+});
+
+  </script>
+</body>
+</html>

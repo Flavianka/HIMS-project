@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="Icon" href="../assets/icons/symbol/favicon-32x32.png" type="image/png"  />
+  <link rel="stylesheet" href="../css/admin.css" />   
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/css/intlTelInput.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <img src="../assets/icons/logo1.png" alt="Logo" class="logo" />
+      <h4>Admin Dashboard</h4>
+      <nav>
+        <div class="nav-option active" onclick="loadSection('overview', this)">
+            <img src="../assets/icons/dashboard.png" alt="Overview Icon" class="nav-icon" />
+          Overview
+        </div>
+        <div class="nav-option" onclick="loadSection('manage-inventory', this)">
+            <img src="../assets/icons/trolley.png" alt="Register Icon" class="nav-icon" />
+          Manage Inventory
+        </div>
+        <div class="nav-option" onclick="loadSection('sales-management', this)">
+            <img src="../assets/icons/sales.png" alt="Sales Icon" class="nav-icon" />
+          Manage Sales
+        </div>
+        <div class="nav-option" onclick="loadSection('view-users', this)">
+            <img src="../assets/icons/users.png" alt="View Icon" class="nav-icon" />
+          Manage Users
+        </div>
+        <div class="nav-option" onclick="loadSection('review-request', this)">
+            <img src="../assets/icons/icons8-sos-96.png" alt="View Icon" class="nav-icon" />
+          Review Support Requests
+        </div>
+        <div class="nav-option" onclick="loadSection('settings', this)">
+            <img src="../assets/icons/settings.png" alt="Settings Icon" class="nav-icon" />
+          Settings
+        </div>
+        <div class="nav-option" onclick="window.location.href='../php/logout.php'">
+            <img src="../assets/icons/logout.png" alt="Logout Icon" class="nav-icon" />
+          Logout
+        </div>
+      </nav>
+    </aside>
+    
+    
+    <main class="content" id="main-content">
+      <!-- Default overview section will be loaded here -->
+       
+    </main>
+
+  </div>
+ <!-- sales graph modal -->
+  <div id="sales-graph-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeSalesGraphModal()">&times;</span>
+    <h2>Sales Trend (KES)</h2>
+    <canvas id="salesChart" width="100%" height="60"></canvas>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeEditUserModal()">&times;</span>
+    <h2>Edit User</h2>
+    <form id="editUserForm">
+      <input type="hidden" id="edit-user-id" name="user_id" />
+
+      <label for="edit-first-name">First Name</label>
+      <input type="text" id="edit-first-name" name="first_name" required />
+
+      <label for="edit-last-name">Last Name</label>
+      <input type="text" id="edit-last-name" name="last_name" required />
+
+      <label for="edit-email">Email</label>
+      <input type="email" id="edit-email" name="email" required />
+
+      <label for="edit-phone">Phone</label>
+      <input type="tel" id="edit-phone" name="phone" required />
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+<!-- Edit Inventory Item Modal -->
+<div id="editInventoryModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditItemModal()">&times;</span>
+    <h2>Edit Inventory Item</h2>
+    <form id="editItemForm">
+      <input type="hidden" id="editItemId" name="id">
+      
+      <label for="editItemCode">Item Code</label>
+      <input type="text" id="editItemCode" readonly style="background-color: #f5f5f5;">
+      
+      <label for="editItemName">Item Name *</label>
+      <input type="text" id="editItemName" name="item_name" required>
+      
+      <label for="editCategory">Category *</label>
+      <select id="editCategory" name="category" required>
+        <option value="">Select category</option>
+        <option value="fuel">Fuel</option>
+        <option value="oil">Lubricants</option>
+        <option value="tools">Tools</option>
+      </select>
+      
+      <label for="editStock">Stock Quantity *</label>
+      <input type="number" id="editStock" name="stock" min="0" required>
+      
+      <label for="editPrice">Price (Ksh) *</label>
+      <input type="number" id="editPrice" name="price" min="0" step="0.01" required>
+      
+      <label for="editLowStockThreshold">Low Stock Threshold</label>
+      <input type="number" id="editLowStockThreshold" name="low_stock_threshold" min="1" value="10">
+      
+      <label for="editImage">Item Image</label>
+      <input type="file" id="editImage" name="image" accept="image/*">
+      <small>Leave empty to keep current image</small>
+      
+      <div class="current-image" id="currentImageContainer" style="margin: 10px 0; display: none;">
+        <label>Current Image:</label>
+        <img id="currentImagePreview" src="" alt="Current Image" style="max-width: 100px; max-height: 100px; display: block; margin-top: 5px;">
+      </div>
+      
+      <div class="modal-buttons">
+        <button type="submit" class="save-btn">Save Changes</button>
+        <button type="button" class="cancel-btn" onclick="closeEditItemModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+ <!-- Support Details Modal - Separate from settings modal -->
+<div id="support-details-modal" class="modal-overlay" style="display: none;">
+  <div class="support-details-content">
+    <span class="close-btn" onclick="closeSupportDetailsModal()">&times;</span>
+    <div id="support-details-body"></div>
+  </div>
+</div>
+<script>
+  function openEditUserModal(user) {
+  document.getElementById('edit-user-id').value = user.id;
+  document.getElementById('edit-first-name').value = user.firstName;
+  document.getElementById('edit-last-name').value = user.lastName;
+  document.getElementById('edit-email').value = user.email;
+  document.getElementById('edit-phone').value = user.phone;
+
+  document.getElementById('edit-user-modal').style.display = 'flex';
+}
+
+function closeEditUserModal() {
+  document.getElementById('edit-user-modal').style.display = 'none';
+}
+
+// Example submit handling (you can adapt to AJAX/post as needed)
+document.getElementById('editUserForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  // TODO: send form data via AJAX or fetch
+  closeEditUserModal();
+  alert('User info saved!');
+});
+
+</script>
+ <!-- settings Modal -->
+<script>
+function openSettingsModal(type) {
+  const modal = document.getElementById('settings-modal');
+  const modalContent = document.getElementById('settings-modal-content');
+
+  let content = '';
+
+  if (type === 'profile') {
+    content = `
+      <h2>Account Settings</h2>
+      <label>Username</label>
+      <input type="text" placeholder="Change username" />
+      <label>Email</label>
+      <input type="email" placeholder="Change email" />
+      <label>Phone Number</label>
+      <input type="tel" placeholder="Phone Number"/>
+      <label>Password</label>
+      <input type="password" placeholder="New password" />
+      <button>Save Changes</button>
+    `;
+  } else if (type === 'appearance') {
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    const savedLayout = localStorage.getItem('layout') || 'standard';
+
+    content = `
+      <h2>Appearance</h2>
+
+      <label>Theme</label>
+      <select id="theme-select">
+        <option value="default" ${savedTheme === 'default' ? 'selected' : ''}>Default</option>
+        <option value="dark" ${savedTheme === 'dark' ? 'selected' : ''}>Dark</option>
+        <option value="light" ${savedTheme === 'light' ? 'selected' : ''}>Light</option>
+      </select>
+
+      <label>Layout Style</label>
+      <select id="layout-select">
+        <option value="standard" ${savedLayout === 'standard' ? 'selected' : ''}>Standard</option>
+        <option value="compact" ${savedLayout === 'compact' ? 'selected' : ''}>Compact</option>
+      </select>
+
+      <button onclick="applyAppearanceSettings()">Save Preferences</button>
+    `;
+  } else if (type === 'security') {
+    content = `
+      <h2>Security Settings</h2>
+      <div class="security-settings-content">
+        <div class="security-section">
+          <h3>Two-Factor Authentication</h3>
+          <div class="twofa-status">
+            <p>Status: <span id="2fa-status" class="status-disabled">Loading...</span></p>
+          </div>
+          
+          <div class="twofa-actions">
+            <button id="enable-2fa-btn" onclick="setup2FA()" class="action-btn primary">Enable 2FA</button>
+            <button id="disable-2fa-btn" onclick="disable2FA()" class="action-btn secondary" style="display: none;">Disable 2FA</button>
+          </div>
+          
+          <div class="security-info">
+            <h4>About 2FA</h4>
+            <p>Two-factor authentication adds an extra layer of security to your account. 
+            You'll need to enter a code from your authenticator app when logging in.</p>
+            <ul>
+              <li>Download Google Authenticator or Authy on your phone</li>
+              <li>Scan the QR code during setup</li>
+              <li>Save your backup codes securely</li>
+              <li>Enter a code each time you login</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="security-section">
+          <h3>Login Activity</h3>
+          <button class="action-btn" onclick="viewLoginActivity()">View Login History</button>
+        </div>
+        
+        <div class="modal-actions">
+          <button onclick="closeSettingsModal()" class="cancel-btn">Close</button>
+        </div>
+      </div>
+    `;
+  }
+
+  modalContent.innerHTML = content;
+  modal.style.display = 'flex';
+  
+  // Load 2FA status if security modal is opened
+  if (type === 'security') {
+    load2FAStatus();
+  }
+}
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    modal.style.display = 'none';
+    // Reset scroll position for next time
+    modal.scrollTop = 0;
+    const modalContent = document.getElementById('settings-modal-content');
+    if (modalContent) {
+        modalContent.scrollTop = 0;
+    }
+}
+</script>
+<div id="settings-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeSettingsModal()">&times;</span>
+    <div id="settings-modal-content"></div>
+  </div>
+</div>
+
+  <script src="../js/admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/intlTelInput.min.js"></script>
+</body>
+</html>
