@@ -1,60 +1,222 @@
-Inventory Management System
-Project Overview
+# 🚀 HyperNest Inventory & Sales Management System
 
-The Inventory Management System is a web-based application designed to help businesses efficiently manage their inventory, track stock levels, and monitor sales. This system simplifies day-to-day operations and provides real-time insights into stock movement.
+HyperNest is a web-based Inventory, Sales, and Administration Management System built using PHP, MySQL, JavaScript, HTML, and CSS.
 
-Features
+It provides role-based access control with a dedicated Super Admin dashboard for system-wide management.
 
-Add, edit, and delete inventory items (name, category, stock, price, image)
+---
 
-View items in a clean card layout
+## 📌 Features
 
-Search inventory items dynamically
+### 👑 Super Admin
+- Secure login system (hard-coded super admin credentials)
+- Dashboard with real-time statistics
+- Manage Admins (Create, Edit, Delete)
+- Manage Users
+- Inventory Management
+- Sales Management
+- Support Request Management
+- Appearance & Security Settings
 
-Upload and display item images
+### 📦 Inventory Management
+- Add, Edit, Delete Items
+- Image Upload Support
+- Category Filtering
+- Search Functionality
+- Pagination
+- Real-time stock updates
 
-User-friendly dashboard with statistics
+### 💰 Sales Management
+- View all sales records
+- Filter by:
+  - Date range
+  - User
+- Export sales to CSV
+- View sales graph
+- Sales summary cards:
+  - Total Sales
+  - Total Revenue
+  - Top Product
 
-Role-based access (Admin & Super Admin)
+### 👥 User Management
+- View users in card layout
+- Search users
+- Manage user information
 
-Data management without page reloads using AJAX
+### 🛠 Support Management
+- View all support requests
+- Filter by:
+  - Status
+  - Priority
+- Update request status
+- Pagination
 
-Tech Stack
+---
 
-Frontend: HTML, CSS, JavaScript
+## 🏗 System Architecture
 
-Backend: PHP
+Frontend:
+- HTML5
+- CSS3
+- Vanilla JavaScript (Fetch API / AJAX)
 
-Database: MySQL
+Backend:
+- PHP (Procedural + Prepared Statements)
+- MySQL Database
 
-Version Control: Git & GitHub
+Server:
+- Apache (XAMPP recommended for development)
 
-Installation & Setup
+---
 
-Clone the repository:
+## 🗄 Database Structure
 
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+Database Name:hypernest
+
+Main Tables:
+- `super_admins`
+- `admins`
+- `users`
+- `inventory`
+- `orders`
+- `sales`
+- `support_requests`
+
+---
+
+## 🔐 Super Admin Login
+
+Currently configured with hard-coded credentials:
 
 
-Move the project files to your web server (XAMPP, WAMP, or live server).
+Main Tables:
+- `super_admins`
+- `admins`
+- `users`
+- `inventory`
+- `orders`
+- `sales`
+- `support_requests`
 
-Create a MySQL database and import the provided .sql file.
+---
 
-Update the config.php file with your database credentials.
+## 🔐 Super Admin Login
 
-Open your browser and navigate to the project URL (e.g., http://localhost/inventory-system)
+Currently configured with hard-coded credentials:
 
-inventory-management-system/
+Username: superadmin
+Password: Super@2025
+
+
+> ⚠️ For production use, it is recommended to store credentials securely in the database.
+
+---
+
+## 📂 Project Structure
+
+hypernest/
 │
-├─ admin/                 # Admin dashboard files
-├─ user/                  # User dashboard files
-├─ superadmin/            # Super Admin dashboard and login files
-├─ assets/                # images
-├─ js/                    # JS
-├─ php/                   # php
-├─ css/                   # css
-├─ uploads/               # uploaded images
-├─ sql/                   # Database SQL dump
-├─ login.html             # Main login page
-├─ registration.html      # Main registration page
-└─ README.md
+├── assets/
+│ ├── icons/
+│ ├── images/
+│
+├── php/
+│ ├── db_connection.php
+│ ├── register_admin.php
+│ ├── get_dashboard_stats.php
+│ ├── get_admins.php
+│ ├── update_admin.php
+│ ├── delete_admin.php
+│ ├── get_users.php
+│ ├── get_sales.php
+│ ├── get_support_requests.php
+│
+├── superadmin/
+│ ├── super-admin-dashboard.html
+│ ├── super-admin.js
+│
+├── uploads/
+│
+└── README.md
+
+
+---
+
+## ⚙️ Installation Guide
+
+### 1️⃣ Clone or Download Project
+Place the folder inside:
+C:\xampp\htdocs
+
+
+### 2️⃣ Start XAMPP
+Start:
+- Apache
+- MySQL
+
+### 3️⃣ Create Database
+Open phpMyAdmin and create:
+hypernest
+
+### 4️⃣ Access the System
+Open browser:
+http://localhost/hypernest
+
+
+---
+
+## 🔄 AJAX & Dynamic Loading
+
+The system uses:
+- `fetch()` API
+- JSON responses
+- Dynamic section rendering
+- No full-page reloads
+
+Dashboard statistics are loaded via:
+- get_dashboard_stats.php
+
+
+---
+
+## 🎨 UI Features
+
+- Clean dashboard layout
+- Icon-based section headers
+- Card-based summaries
+- Theme customization (Light/Dark)
+- LocalStorage appearance persistence
+
+---
+
+## 🔒 Security Features
+
+- Prepared Statements (SQL Injection prevention)
+- Password Hashing (`password_hash`, `password_verify`)
+- Session-based authentication
+- Role-based access separation
+
+---
+
+## 🚀 Future Improvements
+
+- Role-based multi-admin permissions
+- API token authentication
+- Activity logs
+- Notification system
+- Email verification
+- Two-Factor Authentication (2FA)
+- Mobile responsive optimization
+
+---
+
+## 👨‍💻 Author
+
+Developed by:
+**Flavian Kathurima**
+
+---
+
+## 📜 License
+
+This project is for educational and internal business use.
